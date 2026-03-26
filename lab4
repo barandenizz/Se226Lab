@@ -1,0 +1,30 @@
+tasks = {}
+
+numTasks = int(input("Enter the numer of tasks:"))
+
+for i in range(numTasks) :
+    taskName = input("Enter Task Name : ")
+    numDependencies = int(input("Enter number of dependencies :"))
+
+    dependencies = []
+
+    for j in range(numDependencies):
+        dep = input("Enter dependency name : ")
+        dependencies.append(dep)
+
+    tasks[taskName] = dependencies
+
+print("\nTasks and their dependencies : ")
+for task in tasks :
+    print(task,"->",tasks[task])
+
+print("\nTasks with no dependencies :")
+for task in tasks:
+    if len(tasks[task] == 0):
+        print(task)
+        hasNoDependencies = True
+
+if  hasNoDependencies == False :
+    print("No task without dependencies")
+
+
