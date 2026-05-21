@@ -1,0 +1,265 @@
+#include <LiquidCrystal.h>
+
+// =======================
+// 7 Segment Segment Pins
+// =======================
+const int aPin = 2;
+const int bPin = 3;
+const int cPin = 4;
+const int dPin = 5;
+const int ePin = 6;
+const int fPin = 7;
+const int gPin = 8;
+const int dpPin = 9;
+
+// =======================
+// Digit Select Pins (GND)
+// =======================
+const int GND1 = 10; // Rightmost digit
+const int GND2 = 11;
+const int GND3 = 12;
+const int GND4 = 13; // Leftmost digit
+
+// =======================
+// LCD Initialization
+// =======================
+LiquidCrystal lcd(36, 37, 26, 27, 28, 29);
+
+// =======================
+// Counter Digits
+// =======================
+int dig1 = 0;
+int dig2 = 0;
+int dig3 = 0;
+int dig4 = 0;
+
+unsigned long previousMillis = 0;
+
+// =======================
+// Function Prototypes
+// =======================
+void displayDigit(int num);
+void refreshDisplay();
+void incrementCounter();
+void updateLCD();
+
+void setup() {
+
+  // Segment pins OUTPUT
+  pinMode(aPin, OUTPUT);
+  pinMode(bPin, OUTPUT);
+  pinMode(cPin, OUTPUT);
+  pinMode(dPin, OUTPUT);
+  pinMode(ePin, OUTPUT);
+  pinMode(fPin, OUTPUT);
+  pinMode(gPin, OUTPUT);
+  pinMode(dpPin, OUTPUT);
+
+  // Digit pins OUTPUT
+  pinMode(GND1, OUTPUT);
+  pinMode(GND2, OUTPUT);
+  pinMode(GND3, OUTPUT);
+  pinMode(GND4, OUTPUT);
+
+  // LCD Setup
+  lcd.begin(16, 2);
+  lcd.print("Counter:");
+}
+
+void loop() {
+
+  // Multiplexing refresh
+  refreshDisplay();
+
+  // Increment every 1 second
+  unsigned long currentMillis = millis();
+
+  if (currentMillis - previousMillis >= 1000) {
+    previousMillis = currentMillis;
+
+    incrementCounter();
+    updateLCD();
+  }
+}
+
+// =====================================
+// Display Numbers on 7 Segment
+// LOW = segment ON
+// HIGH = segment OFF
+// =====================================
+void displayDigit(int num) {
+
+  switch(num) {
+
+    case 0:
+      digitalWrite(aPin, LOW);
+      digitalWrite(bPin, LOW);
+      digitalWrite(cPin, LOW);
+      digitalWrite(dPin, LOW);
+      digitalWrite(ePin, LOW);
+      digitalWrite(fPin, LOW);
+      digitalWrite(gPin, HIGH);
+      break;
+
+    case 1:
+      digitalWrite(aPin, HIGH);
+      digitalWrite(bPin, LOW);
+      digitalWrite(cPin, LOW);
+      digitalWrite(dPin, HIGH);
+      digitalWrite(ePin, HIGH);
+      digitalWrite(fPin, HIGH);
+      digitalWrite(gPin, HIGH);
+      break;
+
+    case 2:
+      digitalWrite(aPin, LOW);
+      digitalWrite(bPin, LOW);
+      digitalWrite(cPin, HIGH);
+      digitalWrite(dPin, LOW);
+      digitalWrite(ePin, LOW);
+      digitalWrite(fPin, HIGH);
+      digitalWrite(gPin, LOW);
+      break;
+
+    case 3:
+      digitalWrite(aPin, LOW);
+      digitalWrite(bPin, LOW);
+      digitalWrite(cPin, LOW);
+      digitalWrite(dPin, LOW);
+      digitalWrite(ePin, HIGH);
+      digitalWrite(fPin, HIGH);
+      digitalWrite(gPin, LOW);
+      break;
+
+    case 4:
+      digitalWrite(aPin, HIGH);
+      digitalWrite(bPin, LOW);
+      digitalWrite(cPin, LOW);
+      digitalWrite(dPin, HIGH);
+      digitalWrite(ePin, HIGH);
+      digitalWrite(fPin, LOW);
+      digitalWrite(gPin, LOW);
+      break;
+
+    case 5:
+      digitalWrite(aPin, LOW);
+      digitalWrite(bPin, HIGH);
+      digitalWrite(cPin, LOW);
+      digitalWrite(dPin, LOW);
+      digitalWrite(ePin, HIGH);
+      digitalWrite(fPin, LOW);
+      digitalWrite(gPin, LOW);
+      break;
+
+    case 6:
+      digitalWrite(aPin, LOW);
+      digitalWrite(bPin, HIGH);
+      digitalWrite(cPin, LOW);
+      digitalWrite(dPin, LOW);
+      digitalWrite(ePin, LOW);
+      digitalWrite(fPin, LOW);
+      digitalWrite(gPin, LOW);
+      break;
+
+    case 7:
+      digitalWrite(aPin, LOW);
+      digitalWrite(bPin, LOW);
+      digitalWrite(cPin, LOW);
+      digitalWrite(dPin, HIGH);
+      digitalWrite(ePin, HIGH);
+      digitalWrite(fPin, HIGH);
+      digitalWrite(gPin, HIGH);
+      break;
+
+    case 8:
+      digitalWrite(aPin, LOW);
+      digitalWrite(bPin, LOW);
+      digitalWrite(cPin, LOW);
+      digitalWrite(dPin, LOW);
+      digitalWrite(ePin, LOW);
+      digitalWrite(fPin, LOW);
+      digitalWrite(gPin, LOW);
+      break;
+
+    case 9:
+      digitalWrite(aPin, LOW);
+      digitalWrite(bPin, LOW);
+      digitalWrite(cPin, LOW);
+      digitalWrite(dPin, LOW);
+      digitalWrite(ePin, HIGH);
+      digitalWrite(fPin, LOW);
+      digitalWrite(gPin, LOW);
+      break;
+  }
+}
+
+// =====================================
+// Multiplexing Function
+// =====================================
+void refreshDisplay() {
+
+  // Digit 1
+  digitalWrite(GND1, HIGH);
+  displayDigit(dig1);
+  delay(4);
+  digitalWrite(GND1, LOW);
+
+  // Digit 2
+  digitalWrite(GND2, HIGH);
+  displayDigit(dig2);
+  delay(4);
+  digitalWrite(GND2, LOW);
+
+  // Digit 3
+  digitalWrite(GND3, HIGH);
+  displayDigit(dig3);
+  delay(4);
+  digitalWrite(GND3, LOW);
+
+  // Digit 4
+  digitalWrite(GND4, HIGH);
+  displayDigit(dig4);
+  delay(4);
+  digitalWrite(GND4, LOW);
+}
+
+// =====================================
+// Increment Counter
+// =====================================
+void incrementCounter() {
+
+  dig1++;
+
+  if (dig1 >= 10) {
+    dig1 = 0;
+    dig2++;
+  }
+
+  if (dig2 >= 10) {
+    dig2 = 0;
+    dig3++;
+  }
+
+  if (dig3 >= 10) {
+    dig3 = 0;
+    dig4++;
+  }
+
+  if (dig4 >= 10) {
+    dig4 = 0;
+  }
+}
+
+// =====================================
+// LCD Update
+// =====================================
+void updateLCD() {
+
+  lcd.setCursor(0, 1);
+
+  lcd.print(dig4);
+  lcd.print(dig3);
+  lcd.print(dig2);
+  lcd.print(dig1);
+  lcd.print(" ");
+}
